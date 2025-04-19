@@ -22,8 +22,8 @@ const db = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  connectTimeout: 20000,
-  acquireTimeout: 20000
+  connectTimeout: 50000,
+  acquireTimeout: 50000
 });
 
 db.query('SELECT * FROM NhanVien', (err, results) => {
