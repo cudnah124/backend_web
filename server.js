@@ -30,7 +30,11 @@ db.query('SELECT * FROM NhanVien', (err, results) => {
   if (err) {
     console.error('Lỗi truy vấn:', err);
   } else {
-    console.log('Dữ liệu menu:', results);
+    if (results.length === 0) {
+      console.log('Không có dữ liệu trong bảng menu.');
+    } else {
+      console.log('Dữ liệu menu:', results);
+    }
   }
 });
 
