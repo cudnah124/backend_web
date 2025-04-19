@@ -26,11 +26,11 @@ const db = mysql.createPool({
   acquireTimeout: 20000
 });
 
-db.query('SELECT * FROM NhanVien', (err, results) => {
+db.connect((err) => {
   if (err) {
-    console.log('Lỗi kết nối: ', err);
+    console.error('Lỗi kết nối:', err); // Hiển thị lỗi kết nối
   } else {
-    console.log('Kết quả: ', results);
+    console.log('Kết nối thành công đến database');
   }
 });
 
