@@ -22,7 +22,16 @@ const db = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  connectTimeout: 20000
+  connectTimeout: 20000,
+  acquireTimeout: 20000
+});
+
+db.query('SELECT * FROM NhanVien', (err, results) => {
+  if (err) {
+    console.log('Lỗi kết nối: ', err);
+  } else {
+    console.log('Kết quả: ', results);
+  }
 });
 
 app.get('/users' , (req, res) => {
