@@ -6,7 +6,7 @@ const authRoutes = require('./routes/auth');
 const app = express();
 const menuRoutes = require('./routes/menu');
 const paymentRoutes = require('./routes/payment');
-const port = Number(process.env.DB_PORT) || 4000;
+const port = process.env.PORT || 4000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
