@@ -3,10 +3,11 @@ const router = express.Router();
 const mysql = require('mysql2/promise');
 // const { createUser } = require('../controllers/userController');  // Import hàm createUser
 const db = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: 'Nhanha213#',
-  database: 'TAKEAWAY_CAFE',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
