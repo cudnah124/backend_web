@@ -13,20 +13,6 @@ const db = mysql.createPool({
   queueLimit: 0,
   connectTimeout: 20000
 });
-// Route đăng ký tài khoản mới
-// router.post('/register', async (req, res) => {
-//   const { username, password, role } = req.body;
-
-//   // Tạo tài khoản
-//   const result = await createUser(username, password, role);
-
-//   if (result.success) {
-//     res.json(result);
-//   } else {
-//     res.status(500).json(result);
-//   }
-// });
-
 router.get('/login', (req, res) => {
     res.json({ message: "Hello from auth route!" });
   });

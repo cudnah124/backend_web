@@ -1,12 +1,12 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const mysql = require('mysql2');
+const mysql = require('mysql');
 const authRoutes = require('./routes/auth');
 const app = express();
 const menuRoutes = require('./routes/menu');
 const paymentRoutes = require('./routes/payment');
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
@@ -22,9 +22,10 @@ const db = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  connectTimeout: 50000,
-  acquireTimeout: 50000
+  connectTimeout: 1000000,
+  acquireTimeout: 1000000
 });
+
 
 db.query('SELECT * FROM NhanVien', (err, results) => {
   if (err) {

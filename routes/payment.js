@@ -14,6 +14,7 @@ const db = mysql.createPool({
   connectTimeout: 20000
 });
 
+
 router.use(express.json());
 
 // Hàm dùng chung để lấy tất cả khách hàng
