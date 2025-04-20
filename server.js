@@ -32,8 +32,11 @@ let db;
       connectTimeout: 1000000,
       acquireTimeout: 1000000
     });
-
-    // Kiểm tra kết nối bằng truy vấn
+    app.use('/api/auth', authRoutes(db));
+    app.use('/api/menu', menuRoutes(db));
+    app.use('/api/payment', paymentRoutes(db));
+    // Kiểm tra 
+    // kết nối bằng truy vấn
     const [results] = await db.query('SELECT * FROM NhanVien');
     if (results.length === 0) {
       console.log('Không có dữ liệu trong bảng NhanVien.');
