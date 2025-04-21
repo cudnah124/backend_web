@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/db');
+const { getDB } = require('../config/db');
 
 
 router.get('/login', (req, res) => {
@@ -15,6 +15,7 @@ router.post('/login', async (req, res) => {
   const table = role === 'Manager' ? 'UserAccount' : 'UserAccount';
 
   try {
+    const db = getDB();
     const [rows] = await db.query(
       `SELECT * FROM ${table} WHERE Username = ? AND Password = ?`,
       [username, password]

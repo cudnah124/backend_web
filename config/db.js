@@ -23,8 +23,6 @@ async function createDBPool() {
     process.exit(1);  // Dừng server nếu không thể kết nối DB
   }
 }
-
-// Hàm để lấy đối tượng db đã khởi tạo
 function getDB() {
   if (!db) {
     throw new Error('DB chưa được khởi tạo!');
@@ -32,4 +30,6 @@ function getDB() {
   return db;
 }
 
-module.exports = { createDBPool, getDB };
+createDBPool();
+
+module.exports = { getDB };
