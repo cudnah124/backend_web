@@ -3,7 +3,6 @@ const mysql = require('mysql2/promise');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-// Không import route ở đầu file!
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -23,13 +22,12 @@ async function startServer() {
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
-      connectTimeout: 100000,
-      acquireTimeout: 100000
+      connectTimeout: 100000
     });
 
     console.log('✅ Kết nối pool DB thành công!');
 
-    // Import route SAU khi tạo db
+    // ❗ import sau khi db đã sẵn sàng
     const authRoutes = require('./routes/auth')(db);
     const menuRoutes = require('./routes/menu')(db);
     const paymentRoutes = require('./routes/payment')(db);
@@ -37,16 +35,6 @@ async function startServer() {
     app.use('/api/auth', authRoutes);
     app.use('/api/menu', menuRoutes);
     app.use('/api/payment', paymentRoutes);
-
-    app.get('/users', async (req, res) => {
-      try {
-        const [rows] = await db.query("SELECT * FROM UserAccount");
-        res.json(rows);
-      } catch (err) {
-        console.error("Lỗi truy vấn:", err);
-        res.status(500).json({ error: "Internal server error" });
-      }
-    });
 
     app.get('/', (req, res) => {
       res.json({ message: "Hello from backend!" });

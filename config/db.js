@@ -15,7 +15,6 @@ async function createDBPool() {
       connectionLimit: 10,
       queueLimit: 0,
       connectTimeout: 100000,
-      acquireTimeout: 100000,
       multipleStatements: true
     });
     console.log('✅ Kết nối pool DB thành công!');
