@@ -29,11 +29,12 @@ async function startServer() {
 
     // ❗ import sau khi db đã sẵn sàng
     const authRoutes = require('./routes/auth')(db);
+    console.log('✅ authRoutes:', typeof authRoutes); 
     const menuRoutes = require('./routes/menu')(db);
     const paymentRoutes = require('./routes/payment')(db);
 
     app.use('/api/auth', authRoutes);
-    console.log('✅ authRoutes:', typeof authRoutes); // ← chèn dòng này để kiểm tra
+   // ← chèn dòng này để kiểm tra
     app.use('/api/menu', menuRoutes);
     app.use('/api/payment', paymentRoutes);
 
