@@ -1,19 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const db = require('../config/db'); // sử dụng pool từ file db.js
 
-const mysql = require('mysql');
-const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-  connectTimeout: 20000
-});
-router.get('/', (req, res) => {
+// Lấy danh sách menu
+router.get('/', async (req, res) => {
   const sql = `
     SELECT 
       m.MaMon,
@@ -37,13 +27,13 @@ router.get('/', (req, res) => {
     JOIN Topping t ON m.MaMon = t.MaMon
   `;
 
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error('Lỗi lấy menu:', err);
-      return res.status(500).json({ error: 'Lỗi server' });
-    }
+  try {
+    const [results] = await db.query(sql);
     res.json(results);
-  });
+  } catch (err) {
+    console.error('Lỗi lấy menu:', err);
+    res.status(500).json({ error: 'Lỗi server' });
+  }
 });
 
 module.exports = router;
