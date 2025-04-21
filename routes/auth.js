@@ -4,20 +4,22 @@ const express = require('express');
 module.exports = (db) => {
   const router = express.Router();
 
-  router.get('/login', (req, res, next) => {
-    try {
-      res.json({ message: "Hello from auth route!" });
-    } catch (err) {
-      next(err);  // Gọi next để chuyển sang middleware xử lý lỗi (nếu có)
-    }
+  // Test route
+  router.get('/login', (req, res) => {
+    res.json({ message: "Hello from auth route!" });
   });
 
+  // Đăng nhập
   router.post('/login', async (req, res) => {
     const { username, password, role } = req.body;
-    const table = role === 'Manager' ? 'UserAccount' : 'UserAccount';
+    const table = role === 'Manager' ? 'UserAccount' : 'UserAccount'; // Có thể mở rộng role về sau
+
+    let connection;
 
     try {
-      const [rows] = await db.query(
+      connection = await db.getConnection(); // lấy connection từ pool
+
+      const [rows] = await connection.query(
         `SELECT * FROM ${table} WHERE Username = ? AND Password = ?`,
         [username, password]
       );
@@ -30,6 +32,8 @@ module.exports = (db) => {
     } catch (err) {
       console.error("Lỗi DB:", err);
       res.status(500).json({ success: false, message: 'Lỗi máy chủ', error: err.message });
+    } finally {
+      if (connection) connection.release(); // 🔥 rất quan trọng
     }
   });
 
