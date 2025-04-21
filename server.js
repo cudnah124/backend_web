@@ -3,16 +3,24 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2/promise');
 
+const authRoutes = require('./routes/auth');
+const menuRoutes = require('./routes/menu');
+const paymentRoutes = require('./routes/payment');
+
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(bodyParser.json());
 
+
+
+// Biến toàn cục để lưu pool
 let db;
 
 async function startServer() {
   try {
+    // Tạo pool đồng bộ
     db = await mysql.createPool({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
@@ -25,45 +33,11 @@ async function startServer() {
       connectTimeout: 100000
     });
 
-    // 🔁 KEEPALIVE: Giữ kết nối MySQL sống
-    setInterval(async () => {
-      try {
-        const connection = await db.getConnection();
-        await connection.query('SELECT 1');
-        connection.release();
-        console.log('[KeepAlive] MySQL connection alive.');
-      } catch (err) {
-        console.error('[KeepAlive Error]', err);
-      }
-    }, 5 * 60 * 1000); // mỗi 5 phút
 
-    // ✅ Auth route (gộp sẵn luôn ở đây)
-    app.post('/api/auth/login', async (req, res) => {
-      const { username, password, role } = req.body;
-      const table = 'UserAccount';
-      let connection;
-
-      try {
-        connection = await db.getConnection();
-        const [rows] = await connection.query(
-          `SELECT * FROM ${table} WHERE Username = ? AND Password = ?`,
-          [username, password]
-        );
-
-        if (rows.length > 0) {
-          res.json({ success: true, message: 'Đăng nhập thành công!' });
-        } else {
-          res.status(401).json({ success: false, message: 'Sai tài khoản hoặc mật khẩu.' });
-        }
-      } catch (err) {
-        console.error("Lỗi DB:", err);
-        res.status(500).json({ success: false, message: 'Lỗi máy chủ', error: err.message });
-      } finally {
-        if (connection) connection.release();
-      }
-    });
-
-    // Test route
+    app.use('/api/auth', authRoutes(db));
+    app.use('/api/menu', menuRoutes(db));
+    app.use('/api/payment', paymentRoutes(db));
+    // Route test kết nối
     app.get('/users', async (req, res) => {
       try {
         const [rows] = await db.query("SELECT * FROM UserAccount");
@@ -84,8 +58,8 @@ async function startServer() {
 
   } catch (err) {
     console.error("❌ Không thể kết nối tới database:", err);
-    process.exit(1);
+    process.exit(1); // Dừng chương trình nếu kết nối DB thất bại
   }
 }
 
-startServer();
+startServer(); // Khởi động server
