@@ -24,13 +24,6 @@ async function createDBPool() {
     process.exit(1);  // Dừng server nếu không thể kết nối DB
   }
 }
-function getDB() {
-  if (!db) {
-    throw new Error('DB chưa được khởi tạo!');
-  }
-  return db;
-}
-
 createDBPool();
 
-module.exports = { getDB };
+module.exports = db;
