@@ -82,3 +82,13 @@ app.get('/users', (req, res) => {
 app.listen(port, () => {
   console.log(`✅ Server is running on port ${port}`);
 });
+
+app.get('/ping-db', (req, res) => {
+  connection.query('SELECT 1', (err, results) => {
+    if (err) {
+      console.error('❌ Ping DB failed:', err);
+      return res.status(500).json({ error: 'Ping DB failed', details: err.message });
+    }
+    res.json({ status: '✅ OK', result: results });
+  });
+});
