@@ -33,6 +33,7 @@ async function startServer() {
     const paymentRoutes = require('./routes/payment')(db);
 
     app.use('/api/auth', authRoutes);
+    console.log('✅ authRoutes:', typeof authRoutes); // ← chèn dòng này để kiểm tra
     app.use('/api/menu', menuRoutes);
     app.use('/api/payment', paymentRoutes);
 
