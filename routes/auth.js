@@ -1,15 +1,20 @@
+// routes/auth.js
 const express = require('express');
 
 module.exports = (db) => {
   const router = express.Router();
 
-  router.get('/login', (req, res) => {
-    res.json({ message: "Hello from auth route!" });
+  router.get('/login', (req, res, next) => {
+    try {
+      res.json({ message: "Hello from auth route!" });
+    } catch (err) {
+      next(err);  // Gọi next để chuyển sang middleware xử lý lỗi (nếu có)
+    }
   });
 
   router.post('/login', async (req, res) => {
     const { username, password, role } = req.body;
-    const table = 'UserAccount';
+    const table = role === 'Manager' ? 'UserAccount' : 'UserAccount';
 
     try {
       const [rows] = await db.query(

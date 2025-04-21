@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/db'); // pool dùng chung từ db.js
 
-router.use(express.json());
-
+module.exports = (db) => {
 // Hàm dùng chung để lấy tất cả khách hàng
 async function fetchAllCustomers() {
   const sql = `
@@ -80,5 +78,5 @@ router.post('/', async (req, res) => {
     if (connection) connection.release();
   }
 });
-
-module.exports = router;
+return router;
+}

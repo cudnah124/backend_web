@@ -1,7 +1,11 @@
 const express = require('express');
-const mysql = require('mysql2/promise');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const mysql = require('mysql2/promise');
+
+const authRoutes = require('./routes/auth');
+const menuRoutes = require('./routes/menu');
+const paymentRoutes = require('./routes/payment');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -9,10 +13,14 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
+
+
+// Biến toàn cục để lưu pool
 let db;
 
 async function startServer() {
   try {
+    // Tạo pool đồng bộ
     db = await mysql.createPool({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
@@ -25,18 +33,20 @@ async function startServer() {
       connectTimeout: 100000
     });
 
-    console.log('✅ Kết nối pool DB thành công!');
 
-    // ❗ import sau khi db đã sẵn sàng
-    const authRoutes = require('./routes/auth')(db);
-    console.log('✅ authRoutes:', typeof authRoutes); 
-    const menuRoutes = require('./routes/menu')(db);
-    const paymentRoutes = require('./routes/payment')(db);
-
-    app.use('/api/auth', authRoutes);
-   // ← chèn dòng này để kiểm tra
-    app.use('/api/menu', menuRoutes);
-    app.use('/api/payment', paymentRoutes);
+    app.use('/api/auth', authRoutes(db));
+    app.use('/api/menu', menuRoutes(db));
+    app.use('/api/payment', paymentRoutes(db));
+    // Route test kết nối
+    app.get('/users', async (req, res) => {
+      try {
+        const [rows] = await db.query("SELECT * FROM UserAccount");
+        res.json(rows);
+      } catch (err) {
+        console.error("Lỗi truy vấn:", err);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
 
     app.get('/', (req, res) => {
       res.json({ message: "Hello from backend!" });
@@ -48,8 +58,8 @@ async function startServer() {
 
   } catch (err) {
     console.error("❌ Không thể kết nối tới database:", err);
-    process.exit(1);
+    process.exit(1); // Dừng chương trình nếu kết nối DB thất bại
   }
 }
 
-startServer();
+startServer(); // Khởi động server
