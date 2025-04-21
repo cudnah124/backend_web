@@ -3,26 +3,17 @@ const mysql = require('mysql2/promise');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-// Import route dưới dạng HÀM (factory nhận `db`)
-const authRoutes = require('./routes/auth');
-const menuRoutes = require('./routes/menu');
-const paymentRoutes = require('./routes/payment');
-
+// Không import route ở đầu file!
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use('/api/auth', authRoutes);
-app.use('/api/menu', menuRoutes);
-app.use('/api/payment', paymentRoutes);
-
 let db;
 
 async function startServer() {
   try {
-    // Tạo pool đồng bộ
     db = await mysql.createPool({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
@@ -36,7 +27,17 @@ async function startServer() {
       acquireTimeout: 100000
     });
 
-    // Route test kết nối
+    console.log('✅ Kết nối pool DB thành công!');
+
+    // Import route SAU khi tạo db
+    const authRoutes = require('./routes/auth')(db);
+    const menuRoutes = require('./routes/menu')(db);
+    const paymentRoutes = require('./routes/payment')(db);
+
+    app.use('/api/auth', authRoutes);
+    app.use('/api/menu', menuRoutes);
+    app.use('/api/payment', paymentRoutes);
+
     app.get('/users', async (req, res) => {
       try {
         const [rows] = await db.query("SELECT * FROM UserAccount");
@@ -57,7 +58,8 @@ async function startServer() {
 
   } catch (err) {
     console.error("❌ Không thể kết nối tới database:", err);
-    process.exit(1); // Dừng chương trình nếu kết nối DB thất bại
+    process.exit(1);
   }
 }
-startServer(); // Khởi động server
+
+startServer();
