@@ -13,7 +13,7 @@
   });
 (async () => {
     try {
-      const conn = await pool.getConnection(); // test thử kết nối
+      const conn = await db.getConnection(); // test thử kết nối
       console.log('✅ Kết nối DB thành công!');
       conn.release();
     } catch (err) {
@@ -21,4 +21,4 @@
     }
   })();
   
-  module.exports = pool;
+  module.exports = db;
