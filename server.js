@@ -27,7 +27,7 @@ let connection;
 function handleDisconnect() {
   connection = mysql.createConnection(db_config);
 
-  connection.connect(function(err) {
+  connection.connect(function (err) {
     if (err) {
       console.error('❌ Error when connecting to DB:', err);
       setTimeout(handleDisconnect, 2000); // thử lại sau 2 giây
@@ -36,7 +36,7 @@ function handleDisconnect() {
     }
   });
 
-  connection.on('error', function(err) {
+  connection.on('error', function (err) {
     console.error('🔥 MySQL error:', err);
     if (err.code === 'PROTOCOL_CONNECTION_LOST') {
       console.log('⚠️ Reconnecting to MySQL...');
@@ -48,6 +48,19 @@ function handleDisconnect() {
 }
 
 handleDisconnect(); // Bắt đầu kết nối
+
+// ✅ Keepalive để giữ kết nối sống
+setInterval(() => {
+  if (connection && connection.query) {
+    connection.query('SELECT 1', (err) => {
+      if (err) {
+        console.error('⚠️ Keepalive failed:', err);
+      } else {
+        console.log('✅ Keepalive successful');
+      }
+    });
+  }
+}, 5 * 60 * 1000); // 5 phút
 
 // 📦 ROUTES
 app.get('/', (req, res) => {
