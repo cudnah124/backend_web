@@ -41,6 +41,16 @@ async function startServer() {
     app.use('/api/auth', authRoutes(db));
     app.use('/api/menu', menuRoutes(db));
     app.use('/api/payment', paymentRoutes(db));
+    
+    app.get('/ping-mysql', async (req, res) => {
+      try {
+        const [rows] = await db.query("SELECT 1 + 1 AS result");
+        res.json({ success: true, message: "MySQL connected", result: rows[0].result });
+      } catch (error) {
+        console.error("Lỗi khi ping MySQL:", error);
+        res.status(500).json({ success: false, message: "MySQL not connected", error: error.message });
+      }
+    });
     // Route test kết nối
     app.get('/users', async (req, res) => {
       try {
@@ -67,3 +77,5 @@ async function startServer() {
 }
 
 startServer(); // Khởi động server
+
+
