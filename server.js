@@ -33,15 +33,10 @@ async function startServer() {
       connectTimeout: 50000
     });
 
-    if(db){
-      console.log("DB connected")
-    }else{
-      console.log("DB not connected")
-    }
     app.use('/api/auth', authRoutes(db));
     app.use('/api/menu', menuRoutes(db));
     app.use('/api/payment', paymentRoutes(db));
-    
+
     app.get('/ping-mysql', async (req, res) => {
       try {
         const [rows] = await db.query("SELECT 1 + 1 AS result");
