@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 module.exports = (db) => {
-// Hàm dùng chung để lấy tất cả khách hàng
+
 async function fetchAllCustomers() {
   const sql = `
     SELECT KH.MaKH, KH.Ho, KH.Ten, KH.DiemTichLuy, KH.LoaiThanhVien, SDT.SDT

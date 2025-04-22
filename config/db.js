@@ -1,3 +1,4 @@
+
 const mysql = require('mysql2/promise');
 
 let db;  // Khai báo biến db toàn cục
@@ -6,16 +7,16 @@ let db;  // Khai báo biến db toàn cục
 async function createDBPool() {
   try {
     db = await mysql.createPool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      port: process.env.DB_PORT,
+      host: 'localhost',
+      user: 'root',
+      password: 'Nhanha213#',
+      database: 'TAKEAWAY_CAFE',
+      port: 3306,
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
-      connectTimeout: 100000,
-      multipleStatements: true
+      connectTimeout: 50000,
+      acquireTimeout: 50000
     });
     console.log('✅ Kết nối pool DB thành công!');
   } catch (err) {
