@@ -22,15 +22,15 @@ async function startServer() {
   try {
     // Tạo pool đồng bộ
     db = await mysql.createPool({
-      host: process.env.DB_HOST || 'localhost',
+      host: process.env.DB_HOST || 'crossover.proxy.rlwy.net',
       user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD || 'Nhanha213#',
-      database: process.env.DB_NAME || 'TAKEAWAY_CAFE',
-      port: process.env.DB_PORT || 3306,
+      password: process.env.DB_PASSWORD || 'RcUnvKZHWbCAUZDDaovUEOvuOdYUTOTp',
+      database: process.env.DB_NAME || 'railway',
+      port: process.env.DB_PORT || 30541,
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
-      connectTimeout: 50000
+      connectTimeout: 5000
     });
 
     app.use('/api/auth', authRoutes(db));
